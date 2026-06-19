@@ -18,7 +18,6 @@ export class UserClient {
         return new Promise((resolve, reject) => {
             this.ws = new WebSocket(`${gatewayUrl}?v=10&encoding=json`);
             this.ws.on("open", () => {
-                console.log("[UserClient] WebSocket connected");
             });
             this.ws.on("message", (data) => {
                 try {
@@ -32,11 +31,9 @@ export class UserClient {
                 }
             });
             this.ws.on("error", (err) => {
-                console.error("[UserClient] WebSocket error:", err);
                 reject(err);
             });
             this.ws.on("close", () => {
-                console.log("[UserClient] WebSocket closed");
                 this.isReady = false;
                 if (this.heartbeatInterval) {
                     clearInterval(this.heartbeatInterval);
@@ -58,7 +55,6 @@ export class UserClient {
             return response.data.url;
         }
         catch (err) {
-            console.error("[UserClient] Failed to fetch gateway URL:", err);
             throw err;
         }
     }
@@ -69,13 +65,13 @@ export class UserClient {
         const t = message.t;
         this.seq = message.s || this.seq;
         switch (op) {
-            case 10: // HELLO
+            case 10:
                 this.handleHello(d);
                 break;
-            case 11: // HEARTBEAT_ACK
+            case 11:
                 this.lastHeartbeatAck = true;
                 break;
-            case 0: // DISPATCH
+            case 0:
                 this.handleDispatch(t, d);
                 break;
         }
@@ -90,7 +86,7 @@ export class UserClient {
             op: 2,
             d: {
                 token: this.token,
-                intents: 33280, // Minimal intents
+                intents: 33280,
                 properties: {
                     os: "linux",
                     browser: "Discord Client",
@@ -103,7 +99,6 @@ export class UserClient {
     startHeartbeat(interval) {
         this.heartbeatInterval = setInterval(() => {
             if (!this.lastHeartbeatAck) {
-                console.warn("[UserClient] Heartbeat not acknowledged, reconnecting");
                 this.disconnect();
                 return;
             }
@@ -210,4 +205,3 @@ export class UserClient {
         return this.isReady && this.ws?.readyState === WebSocket.OPEN;
     }
 }
-//# sourceMappingURL=userClient.js.map

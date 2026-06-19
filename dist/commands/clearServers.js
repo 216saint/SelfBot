@@ -73,11 +73,9 @@ export class ClearServersCommand {
                 console.error(`\nErro ao sair do servidor ${guildIds[i]}:`, err);
             }
             progressBar.update(i + 1);
-            // 800ms timeout para evitar rate-limit
             await new Promise((resolve) => setTimeout(resolve, 800));
         }
         progressBar.stop();
         console.log(`\n✅ Limpeza concluída! Saiu de ${guildIds.length} servidor(s).\n`);
     }
 }
-//# sourceMappingURL=clearServers.js.map

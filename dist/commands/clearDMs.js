@@ -140,7 +140,6 @@ export class ClearDMsCommand {
                 console.log("\n📭 Nenhuma mensagem para deletar.");
                 return;
             }
-            // Sort based on direction
             const sortedMessages = isRecent
                 ? messages.reverse()
                 : messages;
@@ -158,10 +157,8 @@ export class ClearDMsCommand {
                     deletedCount++;
                 }
                 catch {
-                    // Silenciosamente falha (limitação Discord para DMs)
                 }
                 progressBar.update(i + 1);
-                // 800ms timeout para evitar rate-limit
                 await new Promise((resolve) => setTimeout(resolve, 800));
             }
             progressBar.stop();
@@ -172,4 +169,3 @@ export class ClearDMsCommand {
         }
     }
 }
-//# sourceMappingURL=clearDMs.js.map

@@ -5,7 +5,7 @@ export class UserAPI {
         this.client = axios.create({
             baseURL: "https://discord.com/api/v10",
             headers: {
-                Authorization: token,
+                Authorization: String(token),
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             },
         });
@@ -44,7 +44,6 @@ export class UserAPI {
         try {
             const allMessages = [];
             let before = undefined;
-            // Calculate how many batches we need
             const batchesNeeded = Math.ceil((limit + offset) / 100);
             for (let i = 0; i < batchesNeeded; i++) {
                 const params = { limit: 100 };
@@ -60,7 +59,6 @@ export class UserAPI {
                     break;
                 }
             }
-            // Apply offset
             return allMessages.slice(offset, offset + limit);
         }
         catch (err) {
@@ -110,5 +108,23 @@ export class UserAPI {
             throw err;
         }
     }
+    async getFriends() {
+        try {
+            const response = await this.client.get("/users/@me/relationships");
+            return response.data.filter((r) => r.type === 1);
+        }
+        catch (err) {
+            console.error("Error fetching friends:", err);
+            throw err;
+        }
+    }
+    async removeFriend(userId) {
+        try {
+            await this.client.delete(`/users/@me/relationships/${userId}`);
+        }
+        catch (err) {
+            console.error(`Error removing friend ${userId}:`, err);
+            throw err;
+        }
+    }
 }
-//# sourceMappingURL=userAPI.js.map

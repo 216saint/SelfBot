@@ -65,6 +65,20 @@ export class FarmCallCommand {
                 },
             ]);
             const channelId = channelAnswer.channelId;
+            const selectedGuild = guilds.find((g) => g.id === guildId);
+            const selectedChannel = voiceChannels.find((c) => c.id === channelId);
+            const confirmation = await inquirer.prompt([
+                {
+                    type: "confirm",
+                    name: "confirmed",
+                    message: `Iniciar farm em "${selectedGuild?.name}" - "${selectedChannel?.name}"?`,
+                    default: true,
+                },
+            ]);
+            if (!confirmation.confirmed) {
+                console.log("\n❌ Operação cancelada.");
+                return;
+            }
             console.log(`\n⏳ Entrando no canal de voz...`);
             await this.clientManager.joinVoiceChannel(this.userId, guildId, channelId);
             console.log(`✅ Farm iniciado! Contagem de horas começou.\n`);
@@ -95,10 +109,34 @@ export class FarmCallCommand {
                 },
             ]);
             if (stopAnswer.stopChoice === "all") {
+                const confirmation = await inquirer.prompt([
+                    {
+                        type: "confirm",
+                        name: "confirmed",
+                        message: `Parar TODOS os ${farms.length} farm(s)?`,
+                        default: false,
+                    },
+                ]);
+                if (!confirmation.confirmed) {
+                    console.log("\n❌ Operação cancelada.");
+                    return;
+                }
                 await this.clientManager.leaveAllVoiceChannels(this.userId);
                 console.log("\n✅ Todos os farms foram parados.\n");
             }
             else {
+                const confirmation = await inquirer.prompt([
+                    {
+                        type: "confirm",
+                        name: "confirmed",
+                        message: `Parar farm ${stopAnswer.stopChoice}?`,
+                        default: false,
+                    },
+                ]);
+                if (!confirmation.confirmed) {
+                    console.log("\n❌ Operação cancelada.");
+                    return;
+                }
                 await this.clientManager.leaveVoiceChannel(this.userId, stopAnswer.stopChoice);
                 console.log("\n✅ Farm parado.\n");
             }
@@ -108,4 +146,3 @@ export class FarmCallCommand {
         }
     }
 }
-//# sourceMappingURL=farmCall.js.map

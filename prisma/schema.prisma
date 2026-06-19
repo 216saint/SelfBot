@@ -17,7 +17,6 @@ model UserAccount {
   updatedAt       DateTime @updatedAt
 
   farmSessions FarmSession[]
-  rpcStatus    RPCStatus?
   dmBackups    DMBackup[]
 }
 
@@ -31,17 +30,6 @@ model FarmSession {
   userAccount UserAccount @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@unique([userId, guildId])
-}
-
-model RPCStatus {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  type      String // "spotify", "game", "twitch", "custom"
-  details   String // JSON stringified
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userAccount UserAccount @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model DMBackup {

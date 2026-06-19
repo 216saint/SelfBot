@@ -18,9 +18,20 @@ export class RegisterAccountCommand {
             console.log("\n⚠️  Token vazio. Operação cancelada.");
             return;
         }
+        const confirmation = await inquirer.prompt([
+            {
+                type: "confirm",
+                name: "confirmed",
+                message: "Registrar esta conta?",
+                default: true,
+            },
+        ]);
+        if (!confirmation.confirmed) {
+            console.log("\n❌ Operação cancelada.");
+            return;
+        }
         try {
             console.log("\n⏳ Validando token...");
-            // Generate a unique user ID for this account
             const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             await this.clientManager.addClient(userId, token);
             console.log("✅ Conta registrada com sucesso!\n");
@@ -30,4 +41,3 @@ export class RegisterAccountCommand {
         }
     }
 }
-//# sourceMappingURL=registerAccount.js.map

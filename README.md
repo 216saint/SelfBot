@@ -4,7 +4,7 @@
 
 Um .bat que conecta à sua conta Discord usando WebSockets puros e permite automação da sua conta.
 
-## 🚀 Funciolidades
+## 🚀 Funcionalidades
 
 - ✅ **Clear DMs** - Limpeza inteligente de mensagens diretas com backup opcional
 - ✅ **FarmCall** - Entre em voice channels para farmar (múltiplos farms simultâneos)

@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.sqlite"
+}
+
+model UserAccount {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  discordUserId   String
+  discordUsername String
+  encryptedToken  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  farmSessions FarmSession[]
+  rpcStatus    RPCStatus?
+  dmBackups    DMBackup[]
+}
+
+model FarmSession {
+  id        String   @id @default(cuid())
+  userId    String
+  guildId   String
+  channelId String
+  startedAt DateTime @default(now())
+
+  userAccount UserAccount @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([userId, guildId])
+}
+
+model RPCStatus {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  type      String // "spotify", "game", "twitch", "custom"
+  details   String // JSON stringified
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userAccount UserAccount @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model DMBackup {
+  id           String   @id @default(cuid())
+  userId       String
+  channelId    String
+  channelName  String
+  backupFile   String // caminho do arquivo JSON
+  messageCount Int
+  createdAt    DateTime @default(now())
+
+  userAccount UserAccount @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
